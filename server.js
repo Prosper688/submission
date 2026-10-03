@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const db = require("./database/db");
 
 const app = express();
 const PORT = 3000;
@@ -25,8 +26,13 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/dashboard", (req, res) => {
-    res.render("dashboard");
+    const student = db
+        .prepare("SELECT * FROM students WHERE registration_number = ?")
+        .get("TEST001");
+
+    res.render("dashboard", { student });
 });
+
 
 // Start server
 app.listen(PORT, () => {

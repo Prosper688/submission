@@ -12,19 +12,33 @@
 <body>
 
     <main class="dashboard">
-
         <h1>Student Dashboard</h1>
 
-        <p>Welcome to the student portal.</p>
+        <section class="student-card">
+            <h2>
+                Welcome, <%= student.name %>
+            </h2>
 
-        <section>
-            <h2>Student Information</h2>
+            <p>
+                Registration Number:
+                <strong><%= student.registration_number %></strong>
+            </p>
 
-            <p><strong>Name:</strong> John Doe</p>
-            <p><strong>Registration Number:</strong> 2024XXXX</p>
-            <p><strong>Programme:</strong> Computer Science</p>
+            <p>
+                Programme:
+                <strong><%= student.programme %></strong>
+            </p>
+
+            <p>
+                Department:
+                <strong><%= student.department %></strong>
+            </p>
+
+            <p>
+                Email:
+                <strong><%= student.email %></strong>
+            </p>
         </section>
-
     </main>
 
 </body>
