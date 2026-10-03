@@ -8,15 +8,20 @@
     "node": "22.x",
     "npm": "9.x"
   },
+
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
-  },
+  "start": "node server.js",
+  "dev": "node --watch server.js",
+  "db:init": "node scripts/init-db.js",
+  "test": "echo \"Error: no test specified\" && exit 1"
+},
+
   "keywords": [
     "student-portal",
     "express",
     "sqlite"
   ],
+  
   "author": "",
   "license": "ISC",
   "dependencies": {
