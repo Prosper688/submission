@@ -2,7 +2,7 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS students (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    registration_number TEXT NOT NULL UNIQUE,
+    student_id TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     email TEXT UNIQUE,
     password_hash TEXT NOT NULL,

@@ -1,6 +1,9 @@
 const express = require("express");
 const path = require("path");
-const db = require("./database/db");
+const session = require("express-session");
+
+const authRoutes = require("./routes/auth");
+const studentRoutes = require("./routes/student");
 
 const app = express();
 const PORT = 3000;
@@ -13,6 +16,14 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use(
+    session({
+        secret: "change-this-secret-later",
+        resave: false,
+        saveUninitialized: false
+    })
+);
+
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -21,18 +32,8 @@ app.get("/", (req, res) => {
     res.redirect("/login");
 });
 
-app.get("/login", (req, res) => {
-    res.render("login");
-});
-
-app.get("/dashboard", (req, res) => {
-    const student = db
-        .prepare("SELECT * FROM students WHERE registration_number = ?")
-        .get("TEST001");
-
-    res.render("dashboard", { student });
-});
-
+app.use("/", authRoutes);
+app.use("/", studentRoutes);
 
 // Start server
 app.listen(PORT, () => {
