@@ -1,12 +1,22 @@
 {
   "name": "nust-portal",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "private": true,
+  "description": "NUST-style student portal foundation",
+  "main": "server.js",
+  "engines": {
+    "node": "22.x",
+    "npm": "9.x"
   },
-  "keywords": [],
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "student-portal",
+    "express",
+    "sqlite"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
