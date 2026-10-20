@@ -2,45 +2,79 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NUST Portal - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f8">
+    <title>Sign in | Pioneer University of Science and Innovation</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+<body class="login-page">
+    <header class="login-header">
+        <a class="brand" href="/login" aria-label="Pioneer University of Science and Innovation portal home">
+            <span class="brand-mark" aria-hidden="true">P</span>
+            <span class="brand-copy">
+                <strong>PUSI</strong>
+                <span>STUDENT PORTAL</span>
+            </span>
+        </a>
+        <span class="login-header-note">LEARN · DISCOVER · INNOVATE</span>
+    </header>
 
-<body>
+    <main class="login-shell">
+        <section class="login-intro">
+            <span class="eyebrow">YOUR CAMPUS, CONNECTED</span>
+            <h1>Make your next<br>move <span>count.</span></h1>
+            <p>One place for your courses, registration, results and the latest campus news.</p>
+            <div class="login-ornament" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p class="login-caption">Pioneer University of Science and Innovation</p>
+        </section>
 
-    <main class="login-container">
-        <div class="login-card">
+        <section class="login-card" aria-labelledby="login-title">
+            <div class="login-card-heading">
+                <span class="login-icon" aria-hidden="true">↗</span>
+                <span class="eyebrow">STUDENT ACCESS</span>
+                <h2 id="login-title">Welcome back</h2>
+                <p>Sign in with your student credentials to continue.</p>
+            </div>
 
-            <h1>Student Portal</h1>
-            <p>Sign in to continue</p>
+            <% if (error) { %>
+                <div class="alert alert-error" role="alert"><%= error %></div>
+            <% } %>
 
-            <form action="/login" method="POST">
-
-                <label for="username">Student ID</label>
+            <form action="/login" method="POST" class="form-stack">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <label for="username">Student or lecturer number</label>
                 <input
                     type="text"
                     id="username"
                     name="username"
-                    placeholder="Enter Student ID"
+                    placeholder="Enter your account number"
+                    autocomplete="username"
+                    maxlength="80"
                     required
+                    autofocus
                 >
-
                 <label for="password">Password</label>
                 <input
                     type="password"
                     id="password"
                     name="password"
-                    placeholder="Enter password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    maxlength="1024"
                     required
                 >
-
-                <button type="submit">Sign In</button>
-
+                <button class="button button-primary button-full" type="submit">
+                    Sign in <span aria-hidden="true">→</span>
+                </button>
             </form>
-
-        </div>
+            <p class="login-help">Need access? Contact your faculty administrator.</p>
+        </section>
     </main>
-
+    <footer class="login-footer">
+        <span>© <%= new Date().getFullYear() %> Pioneer University of Science and Innovation</span>
+        <span>Secure access for students and staff</span>
+    </footer>
 </body>
 </html>

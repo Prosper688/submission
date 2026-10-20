@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f8">
+    <title>Administration | Pioneer University of Science and Innovation</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="portal-layout">
+    <%- include("partials/sidebar") %>
+    <div class="portal-content">
+        <%- include("partials/header", { student }) %>
+        <main class="main-content">
+            <% if (flash) { %><div class="alert alert-<%= flash.type %>" role="status"><%= flash.message %></div><% } %>
+            <section class="page-intro"><div><span class="eyebrow">FACULTY TOOLS</span><h2>Administration</h2><p>Manage student and lecturer accounts, assign courses, and share campus news.</p></div></section>
+            <section class="stat-grid admin-stats">
+                <article class="stat-card"><span class="stat-icon icon-blue" aria-hidden="true">♙</span><div><span class="stat-label">STUDENTS</span><strong><%= stats.students %></strong><small>Active student accounts</small></div></article>
+                <article class="stat-card"><span class="stat-icon icon-amber" aria-hidden="true">▤</span><div><span class="stat-label">COURSES</span><strong><%= stats.courses %></strong><small>In the catalogue</small></div></article>
+                <article class="stat-card"><span class="stat-icon icon-green" aria-hidden="true">◉</span><div><span class="stat-label">ANNOUNCEMENTS</span><strong><%= stats.announcements %></strong><small>Published updates</small></div></article>
+            </section>
+
+            <div class="admin-grid">
+                <section class="panel">
+                    <div class="panel-heading"><div><span class="eyebrow">ACCOUNT MANAGEMENT</span><h2>Create a student account</h2></div></div>
+                    <form action="/admin/students" method="POST" class="form-stack admin-form">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <label for="student-id">Student number</label><input id="student-id" name="studentId" maxlength="80" placeholder="e.g. NUS12345" required pattern="[A-Za-z0-9-]{3,80}">
+                        <label for="student-name">Full name</label><input id="student-name" name="name" maxlength="120" autocomplete="name" required minlength="2">
+                        <label for="student-email">Email</label><input id="student-email" type="email" name="email" maxlength="254" autocomplete="email">
+                        <label for="student-programme">Programme</label><input id="student-programme" name="programme" maxlength="120">
+                        <label for="student-department">Department</label><input id="student-department" name="department" maxlength="120">
+                        <label for="student-password">Initial password <span class="muted-text">(12 characters minimum)</span></label><input id="student-password" type="password" name="password" minlength="12" maxlength="1024" autocomplete="new-password" required>
+                        <button class="button button-primary" type="submit">Create account <span aria-hidden="true">→</span></button>
+                    </form>
+                </section>
+                <section class="panel">
+                    <div class="panel-heading"><div><span class="eyebrow">TEACHING TEAM</span><h2>Create a lecturer account</h2></div></div>
+                    <form action="/admin/lecturers" method="POST" class="form-stack admin-form">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <label for="lecturer-id">Lecturer number</label><input id="lecturer-id" name="lecturerId" maxlength="80" placeholder="e.g. LEC001" required pattern="[A-Za-z0-9-]{3,80}">
+                        <label for="lecturer-name">Full name</label><input id="lecturer-name" name="name" maxlength="120" required minlength="2">
+                        <label for="lecturer-email">Email</label><input id="lecturer-email" type="email" name="email" maxlength="254" required>
+                        <label for="lecturer-department">Department</label><input id="lecturer-department" name="department" maxlength="120">
+                        <label for="lecturer-password">Initial password <span class="muted-text">(12 characters minimum)</span></label><input id="lecturer-password" type="password" name="password" minlength="12" maxlength="1024" autocomplete="new-password" required>
+                        <button class="button button-secondary" type="submit">Create lecturer <span aria-hidden="true">→</span></button>
+                    </form>
+                    <div class="admin-existing"><h3>Lecturer accounts <span><%= lecturers.length %></span></h3>
+                        <% if (lecturers.length) { %><div class="compact-list"><% lecturers.slice(0, 6).forEach((lecturer) => { %><div><span class="course-code"><%= lecturer.lecturer_id %></span><span><%= lecturer.name %></span><small><%= lecturer.department || "Lecturer" %></small></div><% }) %></div><% } else { %><p class="muted-text">No lecturer accounts yet.</p><% } %>
+                    </div>
+                </section>
+                <section class="panel">
+                    <div class="panel-heading"><div><span class="eyebrow">ACADEMIC CATALOGUE</span><h2>Add a course</h2></div></div>
+                    <form action="/admin/courses" method="POST" class="form-stack admin-form">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <label for="course-code">Course code</label><input id="course-code" name="code" maxlength="20" placeholder="e.g. CSC101" required pattern="[A-Za-z0-9-]{2,20}">
+                        <label for="course-name">Course name</label><input id="course-name" name="name" maxlength="120" placeholder="Introduction to Computing" required minlength="2">
+                        <label for="credit-hours">Credit hours</label><input id="credit-hours" type="number" name="creditHours" min="1" max="60" value="3" required>
+                        <label for="course-lecturer">Assign lecturer</label><select id="course-lecturer" name="lecturerId"><option value="">Unassigned</option><% lecturers.forEach((lecturer) => { %><option value="<%= lecturer.id %>"><%= lecturer.lecturer_id %> · <%= lecturer.name %></option><% }) %></select>
+                        <button class="button button-primary" type="submit">Add course <span aria-hidden="true">→</span></button>
+                    </form>
+                    <div class="admin-existing"><h3>Course catalogue <span><%= courses.length %></span></h3>
+                        <% if (courses.length) { %><div class="course-assignment-list"><% courses.forEach((course) => { %><form action="/admin/courses/<%= course.id %>/lecturer" method="POST" class="course-assignment"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><div><span class="course-code"><%= course.code %></span><strong><%= course.name %></strong></div><select name="lecturerId" aria-label="Lecturer for <%= course.code %>"><option value="">Unassigned</option><% lecturers.forEach((lecturer) => { %><option value="<%= lecturer.id %>" <%= course.lecturer_id === lecturer.id ? "selected" : "" %>><%= lecturer.lecturer_id %> · <%= lecturer.name %></option><% }) %></select><button class="button button-quiet button-small" type="submit">Save</button></form><% }) %></div><% } else { %><p class="muted-text">No courses in the catalogue yet.</p><% } %>
+                    </div>
+                </section>
+                <section class="panel">
+                    <div class="panel-heading"><div><span class="eyebrow">STUDENT SERVICES</span><h2>Post an announcement</h2></div></div>
+                    <form action="/admin/announcements" method="POST" class="form-stack admin-form">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <label for="announcement-title">Title</label><input id="announcement-title" name="title" maxlength="120" placeholder="What should students know?" required minlength="3">
+                        <label for="announcement-content">Message</label><textarea id="announcement-content" name="content" maxlength="5000" rows="5" placeholder="Share details with students…" required minlength="5"></textarea>
+                        <button class="button button-secondary" type="submit">Publish announcement <span aria-hidden="true">→</span></button>
+                    </form>
+                    <div class="admin-existing"><h3>Recent announcements <span><%= announcements.length %></span></h3>
+                        <% if (announcements.length) { %><div class="compact-list"><% announcements.slice(0, 4).forEach((item) => { %><div class="compact-announcement"><span><%= item.title %></span><small><%= new Date(item.created_at + "Z").toLocaleDateString("en-GB") %></small></div><% }) %></div><% } else { %><p class="muted-text">No announcements have been published.</p><% } %>
+                    </div>
+                </section>
+            </div>
+
+            <section class="panel admin-student-panel">
+                <div class="panel-heading"><div><span class="eyebrow">STUDENT DIRECTORY</span><h2>Student accounts</h2></div><span class="page-count"><strong><%= students.length %></strong> student<%= students.length === 1 ? "" : "s" %></span></div>
+                <% if (students.length) { %><div class="table-scroll"><table class="data-table"><thead><tr><th>STUDENT</th><th>STUDENT NUMBER</th><th>PROGRAMME</th><th>EMAIL</th></tr></thead><tbody><% students.forEach((record) => { %><tr><td><strong><%= record.name %></strong><small class="table-subtext"><%= record.department || "Department not specified" %></small></td><td><span class="course-code"><%= record.student_id %></span></td><td><%= record.programme || "—" %></td><td><%= record.email || "—" %></td></tr><% }) %></tbody></table></div><% } else { %><p class="muted-text">No student accounts found.</p><% } %>
+            </section>
+        </main>
+        <%- include("partials/footer") %>
+    </div>
+</div>

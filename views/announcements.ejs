@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f8">
+    <title>Announcements | Pioneer University of Science and Innovation</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="portal-layout">
+    <%- include("partials/sidebar") %>
+    <div class="portal-content">
+        <%- include("partials/header", { student }) %>
+        <main class="main-content">
+            <section class="page-intro"><div><span class="eyebrow">WHAT'S HAPPENING</span><h2>Campus announcements</h2><p>News and important updates from across the university.</p></div><span class="page-count"><strong><%= announcements.length %></strong> update<%= announcements.length === 1 ? "" : "s" %></span></section>
+            <% if (announcements.length) { %>
+                <div class="announcement-list">
+                    <% announcements.forEach((item, index) => { %>
+                        <article class="announcement-card">
+                            <div class="announcement-index"><%= String(index + 1).padStart(2, "0") %></div>
+                            <div class="announcement-copy"><span class="eyebrow"><%= new Date(item.created_at + "Z").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) %></span><h2><%= item.title %></h2><p><%= item.content %></p></div>
+                            <span class="announcement-dot" aria-hidden="true"></span>
+                        </article>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <section class="panel empty-state"><span class="empty-icon" aria-hidden="true">◉</span><strong>No announcements yet</strong><p>University news and updates will be shared here.</p></section>
+            <% } %>
+        </main>
+        <%- include("partials/footer") %>
+    </div>
+</div>

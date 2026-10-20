@@ -8,6 +8,17 @@ CREATE TABLE IF NOT EXISTS students (
     password_hash TEXT NOT NULL,
     programme TEXT,
     department TEXT,
+    role TEXT NOT NULL DEFAULT 'student' CHECK (role IN ('student', 'admin')),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS lecturers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lecturer_id TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    department TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -15,7 +26,8 @@ CREATE TABLE IF NOT EXISTS courses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     code TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
-    credit_hours INTEGER NOT NULL
+    credit_hours INTEGER NOT NULL,
+    lecturer_id INTEGER REFERENCES lecturers(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS registrations (

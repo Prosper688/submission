@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f8">
+    <title>Courses | Pioneer University of Science and Innovation</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="portal-layout">
+    <%- include("partials/sidebar") %>
+    <div class="portal-content">
+        <%- include("partials/header", { student }) %>
+        <main class="main-content">
+            <% if (flash) { %><div class="alert alert-<%= flash.type %>" role="status"><%= flash.message %></div><% } %>
+            <section class="page-intro">
+                <div><span class="eyebrow">LEARN SOMETHING NEW</span><h2>Course catalogue</h2><p>Explore available courses and build your semester.</p></div>
+                <span class="page-count"><strong><%= courses.length %></strong> course<%= courses.length === 1 ? "" : "s" %> found</span>
+            </section>
+            <form class="search-bar" action="/courses" method="GET">
+                <label class="search-input-wrap" for="course-search"><span aria-hidden="true">⌕</span><input id="course-search" type="search" name="q" value="<%= search %>" placeholder="Search by course name or code" maxlength="80"></label>
+                <label class="search-term"><span class="visually-hidden">Semester</span><select name="semester"><% ["Semester 1", "Semester 2", "Summer"].forEach((option) => { %><option <%= semester === option ? "selected" : "" %>><%= option %></option><% }) %></select></label>
+                <label class="search-term"><span class="visually-hidden">Year</span><input type="number" name="year" value="<%= year %>" min="2000" max="2100"></label>
+                <button type="submit" class="button button-primary">Search</button>
+                <% if (search) { %><a class="button button-quiet" href="/courses?semester=<%= encodeURIComponent(semester) %>&year=<%= year %>">Clear</a><% } %>
+            </form>
+            <% if (courses.length) { %>
+                <div class="catalog-grid">
+                    <% courses.forEach((course) => { %>
+                        <article class="catalog-card">
+                            <div class="catalog-card-top"><span class="course-code"><%= course.code %></span><span class="credit-badge"><%= course.credit_hours %> credits</span></div>
+                            <h3><%= course.name %></h3>
+                            <p>Build your knowledge with a new course this semester.</p>
+                            <% if (course.registered) { %>
+                                <span class="registered-badge"><span aria-hidden="true">✓</span> Already registered</span>
+                            <% } else { %>
+                                <form action="/registration" method="POST" class="registration-form">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <input type="hidden" name="courseId" value="<%= course.id %>">
+                                    <input type="hidden" name="semester" value="<%= semester %>">
+                                    <input type="hidden" name="year" value="<%= year %>">
+                                    <span class="registration-term"><%= semester %> · <%= year %></span>
+                                    <button class="button button-secondary button-full" type="submit">Register for course <span aria-hidden="true">→</span></button>
+                                </form>
+                            <% } %>
+                        </article>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="panel empty-catalog"><span class="empty-icon" aria-hidden="true">▤</span><h3><%= search ? "No matches found" : "No courses yet" %></h3><p><%= search ? "Try a different course name or code." : "The course catalogue is waiting for your faculty administrator to add courses." %></p><% if (search) { %><a class="button button-quiet" href="/courses">Browse all courses</a><% } %></div>
+            <% } %>
+            <section class="panel registered-panel">
+                <div class="panel-heading"><div><span class="eyebrow">YOUR SEMESTER</span><h2>Current registrations</h2></div></div>
+                <% if (registrations.length) { %>
+                    <div class="table-scroll"><table class="data-table"><thead><tr><th>COURSE</th><th>NAME</th><th>TERM</th><th>CREDITS</th><th></th></tr></thead><tbody>
+                        <% registrations.forEach((course) => { %><tr><td><span class="course-code"><%= course.code %></span></td><td><%= course.name %></td><td><%= course.semester %><small class="table-subtext"><%= course.year %></small></td><td><%= course.credit_hours %></td><td class="table-action"><form action="/registration/<%= course.registration_id %>/drop" method="POST" data-confirm="Remove this course registration?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="button button-quiet button-small" type="submit">Drop</button></form></td></tr><% }) %>
+                    </tbody></table></div>
+                <% } else { %><p class="muted-text">No registrations yet. Select a course above to get started.</p><% } %>
+            </section>
+        </main>
+        <%- include("partials/footer") %>
+    </div>
+</div>

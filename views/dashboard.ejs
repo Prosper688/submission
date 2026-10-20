@@ -1,93 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>NUST Portal - Dashboard</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f8">
+    <title>Overview | Pioneer University of Science and Innovation</title>
     <link rel="stylesheet" href="/css/style.css">
-
 </head>
-
 <body>
-
 <div class="portal-layout">
-
     <%- include("partials/sidebar") %>
-
     <div class="portal-content">
-
         <%- include("partials/header", { student }) %>
-
         <main class="main-content">
-
-            <section class="welcome-section">
-
-                <h2>
-                    Welcome, <%= student.name %>
-                </h2>
-
-                <p>
-                    Here's an overview of your student portal.
-                </p>
-
+            <% if (flash) { %>
+                <div class="alert alert-<%= flash.type %>" role="status"><%= flash.message %></div>
+            <% } %>
+            <section class="welcome-banner">
+                <div class="welcome-copy">
+                    <span class="eyebrow eyebrow-light"><%= new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) %></span>
+                    <h2>Welcome back, <%= student.name.split(" ")[0] %>.</h2>
+                    <p>Your learning journey, all in one place.</p>
+                    <% if (student.programme) { %>
+                        <span class="programme-chip"><%= student.programme %></span>
+                    <% } %>
+                </div>
+                <div class="welcome-emblem" aria-hidden="true"><span>P</span></div>
+                <div class="banner-orbit orbit-one" aria-hidden="true"></div>
+                <div class="banner-orbit orbit-two" aria-hidden="true"></div>
             </section>
 
-            <section class="dashboard-grid">
-
-                <div class="dashboard-card">
-
-                    <h3>Student ID</h3>
-
-                    <p>
-                        <%= student.student_id %>
-                    </p>
-
-                </div>
-
-                <div class="dashboard-card">
-
-                    <h3>Programme</h3>
-
-                    <p>
-                        <%= student.programme %>
-                    </p>
-
-                </div>
-
-                <div class="dashboard-card">
-
-                    <h3>Department</h3>
-
-                    <p>
-                        <%= student.department %>
-                    </p>
-
-                </div>
-
-                <div class="dashboard-card">
-
-                    <h3>Email</h3>
-
-                    <p>
-                        <%= student.email %>
-                    </p>
-
-                </div>
-
+            <section class="stat-grid" aria-label="Academic overview">
+                <article class="stat-card">
+                    <span class="stat-icon icon-blue" aria-hidden="true">▤</span>
+                    <div><span class="stat-label">COURSES</span><strong><%= stats.courses %></strong><small>Registered courses</small></div>
+                    <a class="stat-link" href="/courses" aria-label="View courses">↗</a>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-icon icon-amber" aria-hidden="true">▥</span>
+                    <div><span class="stat-label">RESULTS</span><strong><%= stats.results %></strong><small>Published results</small></div>
+                    <a class="stat-link" href="/results" aria-label="View results">↗</a>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-icon icon-green" aria-hidden="true">◉</span>
+                    <div><span class="stat-label">CAMPUS UPDATES</span><strong><%= stats.announcements %></strong><small>Latest announcements</small></div>
+                    <a class="stat-link" href="/announcements" aria-label="View announcements">↗</a>
+                </article>
             </section>
 
+            <div class="content-grid">
+                <section class="panel">
+                    <div class="panel-heading">
+                        <div><span class="eyebrow">YOUR ACADEMICS</span><h2>Registered courses</h2></div>
+                        <a class="text-link" href="/courses">View all <span aria-hidden="true">→</span></a>
+                    </div>
+                    <% if (registrations.length) { %>
+                        <div class="course-list">
+                            <% registrations.forEach((course) => { %>
+                                <article class="course-list-item">
+                                    <span class="course-code"><%= course.code %></span>
+                                    <div class="course-list-copy"><strong><%= course.name %></strong><span><%= course.semester %> · <%= course.year %> · <%= course.credit_hours %> credits</span></div>
+                                    <span class="course-arrow" aria-hidden="true">↗</span>
+                                </article>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <span class="empty-icon" aria-hidden="true">▤</span>
+                            <strong>Your timetable starts here</strong>
+                            <p>You haven’t registered for any courses yet.</p>
+                            <a class="button button-secondary" href="/courses">Explore courses</a>
+                        </div>
+                    <% } %>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-heading">
+                        <div><span class="eyebrow">STAY IN THE LOOP</span><h2>Campus news</h2></div>
+                        <a class="text-link" href="/announcements">All updates <span aria-hidden="true">→</span></a>
+                    </div>
+                    <% if (announcements.length) { %>
+                        <div class="news-list">
+                            <% announcements.forEach((item) => { %>
+                                <article class="news-item">
+                                    <span class="news-marker" aria-hidden="true"></span>
+                                    <div><span class="news-date"><%= new Date(item.created_at + "Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) %></span><h3><%= item.title %></h3><p><%= item.content.length > 125 ? item.content.slice(0, 125) + "…" : item.content %></p></div>
+                                </article>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state empty-state-small"><span class="empty-icon" aria-hidden="true">◉</span><strong>You’re all caught up</strong><p>New campus announcements will appear here.</p></div>
+                    <% } %>
+                </section>
+            </div>
+
+            <section class="student-strip">
+                <div><span class="eyebrow">STUDENT PROFILE</span><strong><%= student.name %></strong><span><%= student.student_id %></span><a class="text-link profile-edit-link" href="/profile">Edit profile →</a></div>
+                <div><span class="eyebrow">DEPARTMENT</span><strong><%= student.department || "Not specified" %></strong><span><%= student.email || "No email on file" %></span></div>
+                <div class="profile-monogram" aria-hidden="true"><%= student.name.split(" ").map(part => part[0]).slice(0, 2).join("").toUpperCase() %></div>
+            </section>
         </main>
-
         <%- include("partials/footer") %>
-
     </div>
-
 </div>

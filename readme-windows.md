@@ -1,6 +1,6 @@
-NUST Portal — Windows Setup Guide
+Pioneer University of Science and Innovation Portal — Windows Setup Guide
 
-This guide explains how to set up and run the NUST Portal project on a fresh Windows computer.
+This guide explains how to set up and run the Pioneer University of Science and Innovation Portal on a fresh Windows computer.
 
 The project uses:
 
@@ -75,7 +75,7 @@ Both commands should return a version number.
 For example:
 
 v22.x.x
-10.x.x
+9.x.x
 
 
 The exact version does not have to match the developer who created the project, provided it is a compatible modern Node.js LTS version.
@@ -210,7 +210,7 @@ git clone <REPOSITORY-URL>
 
 Then enter the project:
 
-cd nust-portal
+cd pioneer-university-portal
 
 
 Replace <REPOSITORY-URL> with the actual repository URL.
@@ -247,7 +247,7 @@ If code is not recognized, open VS Code manually and select:
 File → Open Folder
 
 
-Then select the nust-portal folder.
+Then select the `pioneer-university-portal` folder.
 
 9. Install Project Dependencies
 
@@ -303,12 +303,11 @@ The actual local SQLite database is:
 database\database.db
 
 
-If database.db does not exist, create it using:
+If database.db does not exist, initialize it from the project root:
 
-sqlite3 database/database.db ".read database/schema.sql"
+npm run db:init
 
-
-Alternatively:
+The SQLite command-line tool is optional. To inspect the database directly:
 
 sqlite3 database/database.db
 
@@ -403,7 +402,7 @@ node server.js
 
 You should see something similar to:
 
-NUST Portal running at http://localhost:3000
+Pioneer University Portal running at http://localhost:3000
 
 
 Open a browser and go to:
@@ -426,8 +425,32 @@ This stops the Node.js server.
 
 After the initial setup, you normally only need:
 
-cd path\to\nust-portal
-node server.js
+cd path\to\pioneer-university-portal
+npm start
+
+16. Administrator Setup and Tests
+
+Promote an existing student account to administrator:
+
+$env:ADMIN_STUDENT_ID = "NUS12345"
+npm run admin:create
+Remove-Item Env:ADMIN_STUDENT_ID
+
+For a brand-new administrator, also set ADMIN_NAME, ADMIN_EMAIL, and
+ADMIN_PASSWORD before running the command. Use a password with at least
+12 characters, then clear all of the environment variables.
+
+Administrators can create student and lecturer accounts, add courses, and
+assign courses to lecturers at /admin. Assigned lecturers sign in with their
+lecturer number and use /lecturer/results to enter results for students
+registered in their courses. Students can view the results after publication.
+
+Run the automated integration tests with:
+
+npm test
+
+For production, set a long, unique SESSION_SECRET and NODE_ENV=production.
+Production cookies require HTTPS.
 
 
 Then open:
@@ -443,7 +466,7 @@ Only run npm install when dependencies have changed or after setting up the proj
 
 Open the project:
 
-cd path\to\nust-portal
+cd path\to\pioneer-university-portal
 code .
 
 
@@ -509,7 +532,7 @@ node server.js
 
 The main files are:
 
-nust-portal/
+pioneer-university-portal/
 │
 ├── package.json
 ├── package-lock.json

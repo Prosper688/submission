@@ -1,12 +1,24 @@
 <header class="topbar">
-
-    <div>
-        <h1>Student Portal</h1>
+    <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
+    <div class="topbar-heading">
+        <span class="topbar-kicker">STUDENT PORTAL</span>
+        <h1>
+            <% if (currentPath === "/dashboard") { %>Overview
+            <% } else if (currentPath === "/courses") { %>Course catalogue
+            <% } else if (currentPath === "/results") { %>Academic results
+            <% } else if (currentPath === "/announcements") { %>Campus announcements
+            <% } else if (currentPath === "/profile") { %>My profile
+            <% } else if (currentPath === "/lecturer/results") { %>Enter results
+            <% } else { %>Administration<% } %>
+        </h1>
     </div>
-
     <div class="topbar-student">
-        <span><%= student.name %></span>
-        <small><%= student.student_id %></small>
+        <span class="avatar"><%= student.name.split(" ").map(part => part[0]).slice(0, 2).join("").toUpperCase() %></span>
+        <span class="topbar-person">
+            <strong><%= student.name %></strong>
+            <small><%= student.role === "admin" ? "Administrator" : student.student_id %></small>
+        </span>
     </div>
-
 </header>

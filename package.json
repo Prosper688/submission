@@ -1,8 +1,8 @@
 {
-  "name": "nust-portal",
+  "name": "pioneer-university-portal",
   "version": "1.0.0",
   "private": true,
-  "description": "NUST-style student portal foundation",
+  "description": "Pioneer University of Science and Innovation student portal",
   "main": "server.js",
   "engines": {
     "node": "22.x",
@@ -10,11 +10,12 @@
   },
 
   "scripts": {
-  "start": "node server.js",
-  "dev": "node --watch server.js",
-  "db:init": "node scripts/init-db.js",
-  "test": "echo \"Error: no test specified\" && exit 1"
-},
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db:init": "node scripts/init-db.js",
+    "admin:create": "node scripts/admin-create.js",
+    "test": "node --test"
+  },
 
   "keywords": [
     "student-portal",

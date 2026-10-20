@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f8">
+    <title>My profile | Pioneer University of Science and Innovation</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="portal-layout">
+    <%- include("partials/sidebar") %>
+    <div class="portal-content">
+        <%- include("partials/header", { student }) %>
+        <main class="main-content">
+            <% if (flash) { %><div class="alert alert-<%= flash.type %>" role="status"><%= flash.message %></div><% } %>
+            <section class="page-intro">
+                <div><span class="eyebrow">YOUR ACCOUNT</span><h2>My profile</h2><p>Keep your student contact and programme details up to date.</p></div>
+            </section>
+            <section class="panel profile-panel">
+                <div class="profile-identity">
+                    <span class="profile-monogram profile-large" aria-hidden="true"><%= student.name.split(" ").map(part => part[0]).slice(0, 2).join("").toUpperCase() %></span>
+                    <div><span class="eyebrow">STUDENT NUMBER</span><strong><%= student.student_id %></strong><span class="muted-text">Student numbers are managed by your faculty.</span></div>
+                </div>
+                <form action="/profile" method="POST" class="form-stack profile-form">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <label for="profile-name">Full name</label>
+                    <input id="profile-name" name="name" value="<%= student.name %>" maxlength="120" autocomplete="name" minlength="2" required>
+                    <label for="profile-email">Email address</label>
+                    <input id="profile-email" type="email" name="email" value="<%= student.email || '' %>" maxlength="254" autocomplete="email">
+                    <label for="profile-programme">Programme</label>
+                    <input id="profile-programme" name="programme" value="<%= student.programme || '' %>" maxlength="120">
+                    <label for="profile-department">Department</label>
+                    <input id="profile-department" name="department" value="<%= student.department || '' %>" maxlength="120">
+                    <div class="profile-actions"><button class="button button-primary" type="submit">Save changes <span aria-hidden="true">→</span></button><a class="button button-quiet" href="/dashboard">Cancel</a></div>
+                </form>
+            </section>
+        </main>
+        <%- include("partials/footer") %>
+    </div>
+</div>

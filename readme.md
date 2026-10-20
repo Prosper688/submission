@@ -1,178 +1,56 @@
-NUST Portal
+# Pioneer University of Science and Innovation Portal
 
-A simple student portal project built with Node.js, Express, EJS, SQLite, HTML, CSS and JavaScript.
+A responsive, server-rendered university portal for Pioneer University of Science and Innovation, built with Node.js, Express, EJS, SQLite, and vanilla CSS/JavaScript.
 
-The project is intended as a foundation for a NUST-style student portal. It is deliberately kept simple so another developer can continue building the remaining functionality.
+## Requirements
 
-Tech Stack
+- Node.js 22.x
+- npm 9.x
+- SQLite 3.x command-line tool (optional; the app uses the bundled `better-sqlite3` dependency)
 
-Node.js — server-side JavaScript runtime
+## Setup
 
-Express.js — web server and routing
-
-EJS — HTML templating
-
-SQLite — database
-
-better-sqlite3 — Node.js SQLite driver
-
-bcrypt — password hashing
-
-express-session — login/session management
-
-HTML/CSS/JavaScript — frontend
-
-Requirements
-
-The project was developed on Ubuntu 26.04 LTS.
-
-Required software:
-
-node --version
-npm --version
-sqlite3 --version
-git --version
-
-
-The project currently uses:
-
-Node.js 22.x
-
-npm 9.x
-
-SQLite 3.x
-
-The exact Node package versions are recorded in package-lock.json.
-
-Installation
-
-Clone or copy the project and enter the directory:
-
-cd nust-portal
-
-
-Install the Node dependencies:
-
+```powershell
 npm install
+npm run db:init
+npm start
+```
 
+Open [http://localhost:3000](http://localhost:3000). The Pioneer University of Science and Innovation portal redirects to the sign-in screen.
 
-Do not commit node_modules.
+Create the first administrator account from PowerShell by setting a student number. If that student already has an account, the command promotes it without changing its password:
 
-It is already excluded through .gitignore.
+```powershell
+$env:ADMIN_STUDENT_ID = "NUS12345"
+npm run admin:create
+Remove-Item Env:ADMIN_STUDENT_ID
+```
 
-Database
+To create a new administrator instead, set `ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` as environment variables for the command. The initial password must be at least 12 characters. Clear these variables afterward; passwords are hashed before being stored.
 
-The SQLite database is located at:
+Administrators can create student and lecturer accounts, manage the course catalogue, assign courses to lecturers, and publish announcements at `/admin`. Assigned lecturers enter results for students registered in their courses at `/lecturer/results`. Students can update their profile, view their overview, register for and drop courses, review lecturer-published results, and read announcements.
 
-database/database.db
+## Development
 
+```powershell
+npm run dev
+npm test
+```
 
-The database structure is defined in:
+Tests use an isolated in-memory SQLite database and do not modify the local application data.
 
-database/schema.sql
+The application automatically adds lecturer accounts and course assignment support to an existing database while preserving student and course records. The database schema lives in `database/schema.sql`; the local database file is ignored by Git.
 
+For deployments, set a unique, long `SESSION_SECRET` and `NODE_ENV=production` before starting the server. Production cookies are marked secure and require HTTPS.
 
-If the database needs to be recreated:
+## Project structure
 
-rm database/database.db
-sqlite3 database/database.db < database/schema.sql
+- `server.js` — Express configuration, sessions, CSRF protection, and routes
+- `database/` — SQLite connection, session store, and schema
+- `routes/` — authentication, student, and administrator workflows
+- `views/` — EJS pages and shared layout components
+- `public/` — responsive styling and small progressive-enhancement scripts
+- `scripts/admin-create.js` — initial administrator setup
+- `tests/` — portal integration tests
 
-
-Check the tables:
-
-sqlite3 database/database.db
-
-
-Then:
-
-.tables
-
-
-Exit SQLite with:
-
-.quit
-
-Running the Application
-
-Start the server:
-
-node server.js
-
-
-Then open:
-
-http://localhost:3000
-
-
-The application currently redirects / to /login.
-
-Development
-
-While developing, restart the Node server after backend changes:
-
-node server.js
-
-
-The project does not currently use a development server such as nodemon, keeping the setup intentionally simple.
-
-Git
-
-Check the current state:
-
-git status
-
-
-After making changes:
-
-git add .
-git commit -m "Describe the change"
-
-
-The project currently uses the master branch. If the project is moved to a shared repository, the branch can be renamed to main if desired.
-
-Important
-
-Do not commit:
-
-node_modules/
-database/database.db
-.env
-
-
-The database schema and source code should be committed, but the local SQLite database should generally be generated locally.
-
-Current Status
-
-The project currently has:
-
-Basic Express server
-
-EJS views
-
-Static CSS/JavaScript support
-
-SQLite database
-
-Student table
-
-Course table
-
-Registration table
-
-Results table
-
-Announcements table
-
-Login page
-
-Student login/session foundation
-
-Dashboard foundation
-
-Password hashing with bcrypt
-
-Basic route structure
-
-The application is a foundation, not a finished portal.
-
-See DEVELOPMENT.md for the detailed handoff documentation.
+Do not commit `node_modules/`, `database/database.db`, `.env`, or real credentials.

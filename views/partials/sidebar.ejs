@@ -1,42 +1,60 @@
 <aside class="sidebar">
+    <a class="brand sidebar-brand" href="/dashboard">
+        <span class="brand-mark" aria-hidden="true">P</span>
+        <span class="brand-copy">
+            <strong>PUSI</strong>
+            <span><%= student.role === "lecturer" ? "LECTURER PORTAL" : "STUDENT PORTAL" %></span>
+        </span>
+    </a>
 
-    <div class="sidebar-brand">
-        <h2>NUST</h2>
-        <span>Student Portal</span>
-    </div>
-
-    <nav class="sidebar-nav">
-
-        <a href="/dashboard" class="nav-item">
-            Dashboard
+    <% if (student.role === "lecturer") { %>
+        <span class="nav-label">TEACHING</span>
+        <nav class="sidebar-nav" aria-label="Lecturer tools">
+            <a href="/lecturer/results" class="nav-item <%= currentPath === '/lecturer/results' ? 'active' : '' %>">
+                <span class="nav-icon" aria-hidden="true">▥</span><span>Enter results</span>
+            </a>
+        </nav>
+    <% } else { %>
+    <span class="nav-label">CAMPUS</span>
+    <nav class="sidebar-nav" aria-label="Main navigation">
+        <a href="/dashboard" class="nav-item <%= currentPath === '/dashboard' ? 'active' : '' %>">
+            <span class="nav-icon" aria-hidden="true">⌂</span><span>Overview</span>
         </a>
-
-        <a href="/courses" class="nav-item">
-            Courses
+        <a href="/courses" class="nav-item <%= currentPath === '/courses' ? 'active' : '' %>">
+            <span class="nav-icon" aria-hidden="true">▤</span><span>Courses</span>
         </a>
-
-        <a href="/results" class="nav-item">
-            Results
+        <a href="/results" class="nav-item <%= currentPath === '/results' ? 'active' : '' %>">
+            <span class="nav-icon" aria-hidden="true">▥</span><span>Results</span>
         </a>
-
-        <a href="/registration" class="nav-item">
-            Course Registration
+        <a href="/announcements" class="nav-item <%= currentPath === '/announcements' ? 'active' : '' %>">
+            <span class="nav-icon" aria-hidden="true">◉</span><span>Announcements</span>
         </a>
-
-        <a href="/announcements" class="nav-item">
-            Announcements
+        <a href="/profile" class="nav-item <%= currentPath === '/profile' ? 'active' : '' %>">
+            <span class="nav-icon" aria-hidden="true">♙</span><span>My profile</span>
         </a>
-
     </nav>
+    <% } %>
+
+    <% if (student.role === "admin") { %>
+        <span class="nav-label nav-label-spaced">MANAGEMENT</span>
+        <nav class="sidebar-nav" aria-label="Administration">
+            <a href="/admin" class="nav-item <%= currentPath === '/admin' ? 'active' : '' %>">
+                <span class="nav-icon" aria-hidden="true">⚙</span><span>Administration</span>
+            </a>
+        </nav>
+    <% } %>
 
     <div class="sidebar-bottom">
-
+        <div class="sidebar-note">
+            <span class="status-dot"></span>
+            <span>Portal services<br><strong>All systems ready</strong></span>
+        </div>
         <form action="/logout" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button type="submit" class="logout-button">
-                Logout
+                <span aria-hidden="true">↪</span> Sign out
             </button>
         </form>
-
+        <p class="sidebar-version">PUSI · STUDENT SERVICES</p>
     </div>
-
 </aside>
